@@ -7,6 +7,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -14,12 +15,14 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ sobkawy81 }}
-          password: ${{ sobki81@DOCKER }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ sobkawy81 }}/todo-nodejs:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo-nodejs:latest
+          build-args: |
+            MONGODB_URL=${{ secrets.MONGODB_URL }}
