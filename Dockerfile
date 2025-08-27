@@ -1,15 +1,10 @@
-FROM node:18
-
+FROM node:18-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm install
-
+RUN npm ci --only=production
 COPY . .
-
-ARG MONGODB_URL
-ENV mongoDbUrl=$MONGODB_URL
-
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app /app
 EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["node", "app.js"]
